@@ -1,21 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { CldImage } from 'next-cloudinary';
 import { useUser } from './context/UserContext';
 import { RotatingLines } from 'react-loader-spinner';
-
-declare global {
-  interface Window {
-    cloudinary: any;
-  }
-}
+import UploadWidget from './components/upload-widget';
 
 export default function MyProfile() {
   const [isEditing, setIsEditing] = useState(false);
   const [uploadError, setUploadError] = useState('');
   const [isPoorQuality, setIsPoorQuality] = useState(false);
-  const [uploadWidget, setUploadWidget] = useState<any>(null);
+
   const { 
     profilePicture, setProfilePicture,
     name, setName,
@@ -24,80 +19,21 @@ export default function MyProfile() {
   } = useUser();
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.cloudinary) {
-      const widget = window.cloudinary.createUploadWidget(
-        {
-          cloudName: 'cld-demo-ugc',
-          clientAllowedFormats: 'image',
-          uploadPreset: 'ugc-profile-photo',
-          sources: ['local'],
-          multiple: false,
-          maxFiles: 1,
-        },
-        async (error: any, result: any) => {
-          if (error) {
-            console.error('Upload error:', error);
-            setUploadError(`Upload failed: ${error.status || 'Unknown error'}`);
-            return;
-          }
-          if (result && result.event === 'success') {
-            try {
-              setLoading(true);
-              const checkModeration = async () => {
-                const response = await fetch('/api/test', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify(result.info),
-                });
-                const data = await response.json();
-                if (data.status === 'approved') {
-                  setLoading(false);
-                  setProfilePicture(data.imageUrl);
-                  setUploadError('');
-                  setIsPoorQuality(data.poorQuality);
-                } else if (data.status === 'rejected') {
-                  setLoading(false);
-                  setUploadError(data.message);
-                } else {
-                  // If still pending, check again after a delay
-                  setTimeout(checkModeration, 1000);
-                }
-              };
-
-              checkModeration();
-            } catch (error) {
-              console.error('Error checking moderation status:', error);
-              setUploadError('An error occurred while processing your image.');
-            }
-          } else if (result && result.event === 'close') {
-            if (!result.info) {
-              setUploadError('Upload cancelled or failed. Please try again.');
-            }
-          }
-        }
-      )
-      setUploadWidget(widget);
-    }
-
-    return () => {
-      if (uploadWidget) {
-        uploadWidget.destroy();
-      }
-    }
-  }, [setProfilePicture, setUploadWidget])
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setIsEditing(false)
   }
 
-  const openUploadWidget = () => {
-    if (uploadWidget) {
-      uploadWidget.open();
-    }
+  const handleUploadSuccess = (imageUrl: string, poorQuality: boolean) => {
+    setLoading(false);
+    setProfilePicture(imageUrl)
+    setIsPoorQuality(poorQuality);
+    setUploadError('')
+  }
+
+  const handleUploadError = (error: string) => {
+    setLoading(false);
+    setUploadError(error)
   }
 
   return (
@@ -174,12 +110,12 @@ export default function MyProfile() {
           height={450}
         />
         )}
-        <button
-          onClick={openUploadWidget}
-          className="mt-2 bg-blue-500 text-white p-2 rounded"
-        >
-          Edit Profile Picture
-        </button>
+        <UploadWidget
+          onUploadSuccess={handleUploadSuccess}
+          onUploadError={handleUploadError}
+          setLoading={setLoading}
+          buttonText="Edit Profile Picture"
+        />
         {uploadError && <p className="text-red-500 mt-2">{uploadError}</p>}
       </div>
     </div>

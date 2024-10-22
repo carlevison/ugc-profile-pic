@@ -1,87 +1,17 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { CldImage } from 'next-cloudinary';
 import { useUser } from '../context/UserContext';
 import { RotatingLines } from 'react-loader-spinner';
-
-declare global {
-  interface Window {
-    cloudinary: any;
-  }
-}
+import UploadWidget from '../components/upload-widget';
 
 export default function MyPosts() {
   const [newPost, setNewPost] = useState('');
   const [newImage, setNewImage] = useState('');
   const [uploadError, setUploadError] = useState('');
-  const [uploadWidget, setUploadWidget] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const { profilePicture, posts, setPosts } = useUser()
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.cloudinary) {
-      const widget = window.cloudinary.createUploadWidget(
-        {
-          cloudName: 'cld-demo-ugc',
-          clientAllowedFormats: 'image',
-          uploadPreset: 'ugc-profile-photo',
-          sources: ['local'],
-          multiple: false,
-          maxFiles: 1,
-        },
-        async (error: any, result: any) => {
-          if (error) {
-            console.error('Upload error:', error);
-            setUploadError(`Upload failed: ${error.status || 'Unknown error'}`);
-            return;
-          }
-          if (result && result.event === 'success') {
-            try {
-              setLoading(true);
-              const checkModeration = async () => {
-                const response = await fetch('/api/test', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify(result.info),
-                });
-                const data = await response.json();
-                if (data.status === 'approved') {
-                  setLoading(false);
-                  setNewImage(data.imageUrl);
-                  setUploadError('');
-                } else if (data.status === 'rejected') {
-                  setLoading(false);
-                  setUploadError(data.message);
-                } else {
-                  // If still pending, check again after a delay
-                  setTimeout(checkModeration, 1000);
-                }
-              };
-
-              checkModeration();
-            } catch (error) {
-              console.error('Error checking moderation status:', error);
-              setUploadError('An error occurred while processing your image.');
-            }
-          } else if (result && result.event === 'close') {
-            if (!result.info) {
-              setUploadError('Upload cancelled or failed. Please try again.');
-            }
-          }
-        }
-      )
-      setUploadWidget(widget);
-    }
-
-    return () => {
-      if (uploadWidget) {
-        uploadWidget.destroy();
-      }
-    }
-  }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -96,10 +26,15 @@ export default function MyPosts() {
     }
   }
 
-  const openUploadWidget = () => {
-    if (uploadWidget) {
-      uploadWidget.open();
-    }
+  const handleUploadSuccess = (imageUrl: string) => {
+    setLoading(false);
+    setNewImage(imageUrl)
+    setUploadError('')
+  }
+
+  const handleUploadError = (error: string) => {
+    setLoading(false);
+    setUploadError(error)
   }
 
   return (
@@ -131,13 +66,12 @@ export default function MyPosts() {
              className="rounded" />
         )}
         <div>
-          <button
-            type="button"
-            onClick={openUploadWidget}
-            className="bg-green-500 text-white p-2 rounded mr-2"
-          >
-            Upload Image
-          </button>
+          <UploadWidget
+            onUploadSuccess={handleUploadSuccess}
+            onUploadError={handleUploadError}
+            setLoading={setLoading}
+            buttonText="Upload Image"
+          />
           <button type="submit" className="bg-blue-500 text-white p-2 rounded">
             Post
           </button>
