@@ -6,6 +6,12 @@ import { useUser } from '../context/UserContext';
 import { RotatingLines } from 'react-loader-spinner';
 import UploadWidget from '../components/upload-widget';
 
+interface Post {
+  id: number
+  content: string
+  image?: string
+}
+
 export default function MyPosts() {
   const [newPost, setNewPost] = useState('');
   const [newImage, setNewImage] = useState('');
@@ -37,6 +43,11 @@ export default function MyPosts() {
     setUploadError(error)
   }
 
+  const handleImageUpload = (e: React.MouseEvent) => {
+    e.preventDefault() // Prevent form submission
+    // The actual upload logic is handled in the UploadWidget component
+  }
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">My Posts</h1>
@@ -65,12 +76,13 @@ export default function MyPosts() {
              crop="auto" 
              className="rounded" />
         )}
-        <div>
+        <div className="flex space-x-2">
           <UploadWidget
             onUploadSuccess={handleUploadSuccess}
             onUploadError={handleUploadError}
             setLoading={setLoading}
             buttonText="Upload Image"
+            onClick={handleImageUpload}
           />
           <button type="submit" className="bg-blue-500 text-white p-2 rounded">
             Post
@@ -79,7 +91,7 @@ export default function MyPosts() {
         {uploadError && <p className="text-red-500 mt-2">{uploadError}</p>}
       </form>
       <div className="space-y-4">
-        {posts.map((post) => (
+        {posts.map((post: Post) => (
           <div key={post.id} className="border p-4 rounded flex items-start">
             <div className="flex-shrink-0 w-[75px] h-[75px] mr-4">
             <CldImage

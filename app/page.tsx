@@ -36,6 +36,11 @@ export default function MyProfile() {
     setUploadError(error)
   }
 
+  const handleImageUpload = (e: React.MouseEvent) => {
+    e.preventDefault() // Prevent form submission
+    // The actual upload logic is handled in the UploadWidget component
+  }
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">My Profile</h1>
@@ -115,6 +120,7 @@ export default function MyProfile() {
           onUploadError={handleUploadError}
           setLoading={setLoading}
           buttonText="Edit Profile Picture"
+          onClick={handleImageUpload}
         />
         {uploadError && <p className="text-red-500 mt-2">{uploadError}</p>}
       </div>

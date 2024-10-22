@@ -1,16 +1,18 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { CloudinaryWidget } from '../types';
 
 interface UploadWidgetProps {
   onUploadSuccess: (imageUrl: string, poorQuality: boolean) => void
   onUploadError: (error: string) => void
   setLoading: (loading: boolean) => void
   buttonText: string
+  onClick: (e: React.MouseEvent) => void
 }
 
-export default function UploadWidget({ onUploadSuccess, onUploadError, setLoading, buttonText }: UploadWidgetProps) {
-  const [uploadWidget, setUploadWidget] = useState<any>(null)
+export default function UploadWidget({ onUploadSuccess, onUploadError, setLoading, buttonText, onClick  }: UploadWidgetProps) {
+    const [uploadWidget, setUploadWidget] = useState<CloudinaryWidget | null>(null)
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.cloudinary) {
@@ -29,7 +31,7 @@ export default function UploadWidget({ onUploadSuccess, onUploadError, setLoadin
         async (error: any, result: any) => {
           if (error) {
             console.error('Upload error:', error)
-            onUploadError(`Upload failed: ${error.status || 'Unknown error'}`)
+            onUploadError(`Upload failed: ${error.statusText || 'Unknown error'}`)
             return
           }
 
@@ -77,7 +79,8 @@ export default function UploadWidget({ onUploadSuccess, onUploadError, setLoadin
     }
   }, [onUploadSuccess, onUploadError])
 
-  const openUploadWidget = () => {
+  const openUploadWidget = (e: React.MouseEvent) => {
+    onClick(e)
     if (uploadWidget) {
       uploadWidget.open()
     }
