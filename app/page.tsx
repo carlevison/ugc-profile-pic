@@ -36,7 +36,12 @@ export default function MyProfile() {
           maxFiles: 1,
         },
         async (error: any, result: any) => {
-          if (!error && result && result.event === 'success') {
+          if (error) {
+            console.error('Upload error:', error);
+            setUploadError(`Upload failed: ${error.status || 'Unknown error'}`);
+            return;
+          }
+          if (result && result.event === 'success') {
             try {
               setLoading(true);
               const checkModeration = async () => {
@@ -66,6 +71,10 @@ export default function MyProfile() {
             } catch (error) {
               console.error('Error checking moderation status:', error);
               setUploadError('An error occurred while processing your image.');
+            }
+          } else if (result && result.event === 'close') {
+            if (!result.info) {
+              setUploadError('Upload cancelled or failed. Please try again.');
             }
           }
         }
