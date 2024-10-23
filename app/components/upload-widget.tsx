@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback  } from 'react'
 import { CloudinaryWidget } from '../types';
 
 interface UploadWidgetProps {
@@ -11,8 +11,38 @@ interface UploadWidgetProps {
   onClick: (e: React.MouseEvent) => void
 }
 
-export default function UploadWidget({ onUploadSuccess, onUploadError, setLoading, buttonText, onClick  }: UploadWidgetProps) {
+export default function UploadWidget({ onUploadSuccess, onUploadError, setLoading, buttonText, onClick }: UploadWidgetProps) {
     const [uploadWidget, setUploadWidget] = useState<CloudinaryWidget | null>(null)
+  
+    const checkModeration = useCallback(async (info: any, startTime: number) => {
+      if (Date.now() - startTime > 60000) {
+        onUploadError('Moderation check timed out. Please try again.')
+        return
+      }
+
+      try {
+        const response = await fetch('/api/test', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(info),
+        })
+        const data = await response.json()
+        if (data.status === 'approved') {
+          onUploadSuccess(data.imageUrl, data.poorQuality)
+        } else if (data.status === 'rejected') {
+          onUploadError(data.message)
+        } else {
+          // If still pending, check again after a delay
+          setTimeout(() => checkModeration(info, startTime), 1000)
+        }
+      } catch (error) {
+        console.error('Error checking moderation status:', error)
+        onUploadError('An error occurred while processing your image.')
+      }
+    }, [onUploadSuccess, onUploadError])
+
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.cloudinary) {
@@ -36,32 +66,10 @@ export default function UploadWidget({ onUploadSuccess, onUploadError, setLoadin
           }
 
           if (result && result.event === 'success') {
-            try {
-              setLoading(true);
-              const checkModeration = async () => {
-                const response = await fetch('/api/test', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify(result.info),
-                })
-                const data = await response.json()
-                if (data.status === 'approved') {
-                  onUploadSuccess(data.imageUrl, data.poorQuality)
-                } else if (data.status === 'rejected') {
-                  onUploadError(data.message)
-                } else {
-                  // If still pending, check again after a delay
-                  setTimeout(checkModeration, 1000)
-                }
-              }
-
-              checkModeration()
-            } catch (error) {
-              console.error('Error checking moderation status:', error)
-              onUploadError('An error occurred while processing your image.')
-            }
+            onUploadError('')
+            setLoading(true);
+            const startTime = Date.now();
+            checkModeration(result.info, startTime);
           } else if (result && result.event === 'close') {
             if (!result.info) {
               onUploadError('Upload cancelled or failed. Please try again.')
@@ -77,7 +85,7 @@ export default function UploadWidget({ onUploadSuccess, onUploadError, setLoadin
         uploadWidget.destroy()
       }
     }
-  }, [onUploadSuccess, onUploadError])
+  }, [checkModeration, onUploadError])
 
   const openUploadWidget = (e: React.MouseEvent) => {
     onClick(e)

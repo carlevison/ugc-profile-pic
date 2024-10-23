@@ -107,7 +107,7 @@ export default function MyProfile() {
           />
         ) : (
           <CldImage
-          src={"avatar.png"}
+          src={"avatar-pic"}
           alt="Profile"
           crop="fill"
           gravity="auto"
