@@ -71,9 +71,10 @@ export default function MyPosts() {
           <CldImage 
              src={newImage} 
              alt="New post" 
-             width={200} 
+             width={300} 
              height={200} 
-             crop="auto" 
+             crop="pad" 
+             background="gray"
              className="rounded" />
         )}
         <div className="flex space-x-2">
@@ -99,14 +100,21 @@ export default function MyPosts() {
               alt="Profile"
               width={75}
               height={75}
-              rawTransformations={['ar_1,c_fill,g_face,h_75', 'r_max', 'co_pink,e_outline']}
+              rawTransformations={['ar_1,c_fill,g_auto:face,h_75', 'r_max', 'co_pink,e_outline']}
 
             />
             </div>
             <div>
               <p>{post.content}</p>
               {post.image && (
-                <CldImage src={post.image} alt="Post" width={200} height={200} crop="auto" className="mt-2 rounded" />
+                <CldImage 
+                  src={post.image} 
+                  alt="Post" 
+                  width={300} 
+                  height={200} 
+                  crop="pad" 
+                  background="gray"
+                  className="mt-2 rounded" />
               )}
             </div>
           </div>

@@ -83,8 +83,9 @@ export default function MyProfile() {
           </button>
         </div>
       )}
-      <div className="mt-4">
-        <h2 className="text-xl font-bold mb-2">Profile Picture</h2>
+      <div className="mt-8">
+        <h2 className="text-xl font-bold mb-4">Profile Picture</h2>
+        <div className="space-y-4">
         {loading ? (
           <RotatingLines
           visible={true}
@@ -99,9 +100,9 @@ export default function MyProfile() {
             src={profilePicture}
             alt="Profile"
             crop="fill"
-            gravity="face"
+            gravity="auto:face"
             width={300}
-            height={450}
+            height={300}
             enhance={isPoorQuality && true}
             restore={isPoorQuality && true}
           />
@@ -112,7 +113,7 @@ export default function MyProfile() {
           crop="fill"
           gravity="auto"
           width={300}
-          height={450}
+          height={300}
         />
         )}
         <UploadWidget
@@ -122,6 +123,7 @@ export default function MyProfile() {
           buttonText="Edit Profile Picture"
           onClick={handleImageUpload}
         />
+        </div>
         {uploadError && <p className="text-red-500 mt-2">{uploadError}</p>}
       </div>
     </div>

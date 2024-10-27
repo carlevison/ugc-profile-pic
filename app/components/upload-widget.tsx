@@ -21,7 +21,7 @@ export default function UploadWidget({ onUploadSuccess, onUploadError, setLoadin
       }
 
       try {
-        const response = await fetch('/api/test', {
+        const response = await fetch('/api/moderate', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -54,9 +54,6 @@ export default function UploadWidget({ onUploadSuccess, onUploadError, setLoadin
           sources: ['local'],
           multiple: false,
           maxFiles: 1,
-          cropping: true,
-          croppingAspectRatio: 1,
-          showSkipCropButton: true,
         },
         async (error: any, result: any) => {
           if (error) {
