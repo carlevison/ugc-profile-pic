@@ -1,18 +1,23 @@
 'use client'
 
 import { useState } from 'react';
-import { CldImage } from 'next-cloudinary';
 import { useUser } from './context/UserContext';
 import { RotatingLines } from 'react-loader-spinner';
 import UploadWidget from './components/upload-widget';
+import cld from "./components/cld";
+import { AdvancedImage } from '@cloudinary/react';
+import { fill } from '@cloudinary/url-gen/actions/resize';
+import { enhance, generativeRestore, upscale } from "@cloudinary/url-gen/actions/effect";
+import { focusOn, autoGravity } from "@cloudinary/url-gen/qualifiers/gravity";
+import { face } from "@cloudinary/url-gen/qualifiers/focusOn";
 
 export default function MyProfile() {
   const [isEditing, setIsEditing] = useState(false);
   const [uploadError, setUploadError] = useState('');
-  const [isPoorQuality, setIsPoorQuality] = useState(false);
 
   const { 
-    profilePicture, setProfilePicture,
+    setProfilePublicId,
+    profileImage, setProfileImage,
     name, setName,
     location, setLocation,
     birthday, setBirthday
@@ -24,16 +29,27 @@ export default function MyProfile() {
     setIsEditing(false)
   }
 
-  const handleUploadSuccess = (imageUrl: string, poorQuality: boolean) => {
+  const handleUploadSuccess = (publicId: string, poorQuality: boolean) => {
     setLoading(false);
-    setProfilePicture(imageUrl)
-    setIsPoorQuality(poorQuality);
-    setUploadError('')
+    setUploadError('');
+    setProfilePublicId(publicId);
+
+    // Create the delivery URL for the profile picture:
+    const profileImage = cld.image(publicId);
+
+    profileImage.resize(fill().width(300).height(300).gravity(
+      focusOn(face()).fallbackGravity(autoGravity())));
+
+    if (poorQuality) {
+      profileImage.effect(enhance()).effect(generativeRestore()).effect(upscale());
+    }
+
+    setProfileImage(profileImage);
   }
 
   const handleUploadError = (error: string) => {
     setLoading(false);
-    setUploadError(error)
+    setUploadError(error);
   }
 
   const handleImageUpload = (e: React.MouseEvent) => {
@@ -95,26 +111,12 @@ export default function MyProfile() {
           animationDuration="0.75"
         />
         ):
-        profilePicture ? (
-          <CldImage
-            src={profilePicture}
-            alt="Profile"
-            crop="fill"
-            gravity="auto:face"
-            width={300}
-            height={300}
-            enhance={isPoorQuality && true}
-            restore={isPoorQuality && true}
-          />
+        profileImage ? (
+          <AdvancedImage cldImg={profileImage} width={300} height={300} alt="Profile"/>
+
         ) : (
-          <CldImage
-          src={"avatar-pic"}
-          alt="Profile"
-          crop="fill"
-          gravity="auto"
-          width={300}
-          height={300}
-        />
+          <AdvancedImage cldImg={cld.image("avatar-pic").
+            resize(fill().width(300).height(300).gravity(autoGravity()))} width={300} height={300} alt="Profile" />
         )}
         <UploadWidget
           onUploadSuccess={handleUploadSuccess}

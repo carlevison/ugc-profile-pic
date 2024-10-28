@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ 
       status: 'approved',
       poorQuality: poorQuality, 
-      imageUrl: public_id
+      publicId: public_id
     })
   } else {
     return NextResponse.json({ 

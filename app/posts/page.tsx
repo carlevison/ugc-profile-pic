@@ -1,10 +1,17 @@
 'use client'
 
 import { useState } from 'react';
-import { CldImage } from 'next-cloudinary';
 import { useUser } from '../context/UserContext';
 import { RotatingLines } from 'react-loader-spinner';
 import UploadWidget from '../components/upload-widget';
+import cld from "../components/cld";
+import { AdvancedImage } from '@cloudinary/react';
+import { fill, pad } from '@cloudinary/url-gen/actions/resize';
+import { focusOn, autoGravity } from "@cloudinary/url-gen/qualifiers/gravity";
+import { face } from "@cloudinary/url-gen/qualifiers/focusOn";
+import { max, byRadius } from "@cloudinary/url-gen/actions/roundCorners";
+import { outline } from "@cloudinary/url-gen/actions/effect";
+import { color } from "@cloudinary/url-gen/qualifiers/background";
 
 interface Post {
   id: number
@@ -17,7 +24,7 @@ export default function MyPosts() {
   const [newImage, setNewImage] = useState('');
   const [uploadError, setUploadError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { profilePicture, posts, setPosts } = useUser()
+  const { profilePublicId, posts, setPosts } = useUser()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,9 +39,9 @@ export default function MyPosts() {
     }
   }
 
-  const handleUploadSuccess = (imageUrl: string) => {
+  const handleUploadSuccess = (publicId: string) => {
     setLoading(false);
-    setNewImage(imageUrl)
+    setNewImage(publicId)
     setUploadError('')
   }
 
@@ -68,14 +75,10 @@ export default function MyPosts() {
         />
         ):
         newImage && (
-          <CldImage 
-             src={newImage} 
-             alt="New post" 
-             width={300} 
-             height={200} 
-             crop="pad" 
-             background="gray"
-             className="rounded" />
+             <AdvancedImage cldImg={cld.image(newImage).
+              resize(pad().width(300).height(200).background(color("gray"))).
+                roundCorners(byRadius(5))
+            } width={300} height={200} alt="New post"/>
         )}
         <div className="flex space-x-2">
           <UploadWidget
@@ -95,26 +98,21 @@ export default function MyPosts() {
         {posts.map((post: Post) => (
           <div key={post.id} className="border p-4 rounded flex items-start dark:border-gray-700">
             <div className="flex-shrink-0 w-[75px] h-[75px] mr-4">
-            <CldImage
-              src={profilePicture || 'avatar-pic'}
-              alt="Profile"
-              width={75}
-              height={75}
-              rawTransformations={['ar_1,c_fill,g_auto:face,h_75', 'r_max', 'co_pink,e_outline']}
-
-            />
+              <AdvancedImage cldImg={cld.image(profilePublicId  || 'avatar-pic').
+                resize(fill().width(75).height(75).gravity(
+                  focusOn(face()).fallbackGravity(autoGravity()))).
+                  roundCorners(max()).
+                  effect(
+                    outline().color("pink"))
+              } width={75} height={75} alt="Profile"/>
             </div>
             <div>
             <p className="text-gray-900 dark:text-gray-100">{post.content}</p>
               {post.image && (
-                <CldImage 
-                  src={post.image} 
-                  alt="Post" 
-                  width={300} 
-                  height={200} 
-                  crop="pad" 
-                  background="gray"
-                  className="mt-2 rounded" />
+                <AdvancedImage cldImg={cld.image(post.image).
+                  resize(pad().width(300).height(200).background(color("gray"))).
+                    roundCorners(byRadius(5))
+                } width={300} height={200} alt="Post" className="mt-2"/>
               )}
             </div>
           </div>

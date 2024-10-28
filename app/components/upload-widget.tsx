@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback  } from 'react'
 import { CloudinaryWidget } from '../types';
 
 interface UploadWidgetProps {
-  onUploadSuccess: (imageUrl: string, poorQuality: boolean) => void
+  onUploadSuccess: (publicId: string, poorQuality: boolean) => void
   onUploadError: (error: string) => void
   setLoading: (loading: boolean) => void
   buttonText: string
@@ -30,7 +30,7 @@ export default function UploadWidget({ onUploadSuccess, onUploadError, setLoadin
         })
         const data = await response.json()
         if (data.status === 'approved') {
-          onUploadSuccess(data.imageUrl, data.poorQuality)
+          onUploadSuccess(data.publicId, data.poorQuality)
         } else if (data.status === 'rejected') {
           onUploadError(data.message)
         } else {
@@ -50,7 +50,7 @@ export default function UploadWidget({ onUploadSuccess, onUploadError, setLoadin
         {
           cloudName: 'cld-demo-ugc',
           clientAllowedFormats: 'image',
-          uploadPreset: 'ugc-profile-photo',
+          uploadPreset: 'ugc-profile-photo-local',
           sources: ['local'],
           multiple: false,
           maxFiles: 1,

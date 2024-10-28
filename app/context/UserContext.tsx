@@ -1,5 +1,6 @@
 'use client'
 
+import { CloudinaryImage } from '@cloudinary/url-gen/index'
 import React, { createContext, useState, useContext } from 'react'
 
 interface Post {
@@ -9,8 +10,10 @@ interface Post {
 }
 
 interface UserContextType {
-  profilePicture: string
-  setProfilePicture: (url: string) => void
+  profilePublicId: string
+  setProfilePublicId: (publicId: string) => void
+  profileImage: CloudinaryImage | undefined;
+  setProfileImage: React.Dispatch<React.SetStateAction<CloudinaryImage | undefined>>;  // And this line
   name: string
   setName: (name: string) => void
   location: string
@@ -24,7 +27,8 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined)
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
-  const [profilePicture, setProfilePicture] = useState('')
+  const [profilePublicId, setProfilePublicId] = useState('')
+  const [profileImage, setProfileImage] = useState<CloudinaryImage | undefined>(undefined)
   const [name, setName] = useState('')
   const [location, setLocation] = useState('')
   const [birthday, setBirthday] = useState('')
@@ -33,7 +37,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <UserContext.Provider value={{ 
-      profilePicture, setProfilePicture,
+      profilePublicId, setProfilePublicId,
+      profileImage, setProfileImage,
       name, setName,
       location, setLocation,
       birthday, setBirthday,
