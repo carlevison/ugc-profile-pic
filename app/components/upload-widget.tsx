@@ -4,22 +4,26 @@ import { useState, useEffect, useCallback  } from 'react'
 import { CloudinaryWidget } from '../types';
 
 interface UploadWidgetProps {
-  onUploadSuccess: (imageUrl: string, poorQuality: boolean) => void
+  onUploadSuccess: (publicId: string, poorQuality: boolean) => void
   onUploadError: (error: string) => void
   setLoading: (loading: boolean) => void
   buttonText: string
   onClick: (e: React.MouseEvent) => void
 }
 
+// The Upload widget component
 export default function UploadWidget({ onUploadSuccess, onUploadError, setLoading, buttonText, onClick }: UploadWidgetProps) {
     const [uploadWidget, setUploadWidget] = useState<CloudinaryWidget | null>(null)
   
+    // Check if the moderation result from the uploaded asset has been received at the moderate endpoint.
+    // This check times out after a minute.
     const checkModeration = useCallback(async (info: any, startTime: number) => {
       if (Date.now() - startTime > 60000) {
         onUploadError('Moderation check timed out. Please try again.')
         return
       }
 
+      // Once a second, check if the moderation result has been received at tge moderate endpoint.
       try {
         const response = await fetch('/api/moderate', {
           method: 'POST',
@@ -30,7 +34,7 @@ export default function UploadWidget({ onUploadSuccess, onUploadError, setLoadin
         })
         const data = await response.json()
         if (data.status === 'approved') {
-          onUploadSuccess(data.imageUrl, data.poorQuality)
+          onUploadSuccess(data.publicId, data.poorQuality)
         } else if (data.status === 'rejected') {
           onUploadError(data.message)
         } else {
@@ -91,6 +95,7 @@ export default function UploadWidget({ onUploadSuccess, onUploadError, setLoadin
     }
   }
 
+  // Return the button that opens the Upload widget
   return (
     <button
       onClick={openUploadWidget}
