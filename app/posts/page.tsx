@@ -56,7 +56,7 @@ export default function MyPosts() {
           value={newPost}
           onChange={(e) => setNewPost(e.target.value)}
           placeholder="What's on your mind?"
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
         />
         {loading ? (
           <RotatingLines
@@ -85,7 +85,7 @@ export default function MyPosts() {
             buttonText="Upload Image"
             onClick={handleImageUpload}
           />
-          <button type="submit" className="bg-blue-500 text-white p-2 rounded">
+          <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded transition duration-300">
             Post
           </button>
         </div>
@@ -93,7 +93,7 @@ export default function MyPosts() {
       </form>
       <div className="space-y-4">
         {posts.map((post: Post) => (
-          <div key={post.id} className="border p-4 rounded flex items-start">
+          <div key={post.id} className="border p-4 rounded flex items-start dark:border-gray-700">
             <div className="flex-shrink-0 w-[75px] h-[75px] mr-4">
             <CldImage
               src={profilePicture || 'avatar-pic'}
@@ -105,7 +105,7 @@ export default function MyPosts() {
             />
             </div>
             <div>
-              <p>{post.content}</p>
+            <p className="text-gray-900 dark:text-gray-100">{post.content}</p>
               {post.image && (
                 <CldImage 
                   src={post.image} 

@@ -51,23 +51,23 @@ export default function MyProfile() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Name"
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
           />
           <input
             type="text"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="Location"
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
           />
           <input
             type="date"
             value={birthday}
             onChange={(e) => setBirthday(e.target.value)}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 [color-scheme:light] dark:[color-scheme:dark]"
           />
-          <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-            Save
+          <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded transition duration-300">
+          Save
           </button>
         </form>
       ) : (
@@ -77,7 +77,7 @@ export default function MyProfile() {
           <p><strong>Birthday:</strong> {birthday || 'Not set'}</p>
           <button
             onClick={() => setIsEditing(true)}
-            className="bg-green-500 text-white p-2 rounded"
+            className="bg-green-500 hover:bg-green-600 text-white p-2 rounded transition duration-300"
           >
             Edit Profile
           </button>

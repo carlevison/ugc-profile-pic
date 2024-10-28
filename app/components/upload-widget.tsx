@@ -94,7 +94,7 @@ export default function UploadWidget({ onUploadSuccess, onUploadError, setLoadin
   return (
     <button
       onClick={openUploadWidget}
-      className="bg-green-500 text-white p-2 rounded mr-2"
+      className="bg-green-500 hover:bg-green-600 text-white p-2 rounded transition duration-300"
     >
       {buttonText}
     </button>
