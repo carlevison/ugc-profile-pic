@@ -19,6 +19,7 @@ interface Post {
   image?: string
 }
 
+// The Posts page lets users write a post and optionally upload an image.
 export default function MyPosts() {
   const [newPost, setNewPost] = useState('');
   const [newImage, setNewImage] = useState('');
@@ -58,6 +59,8 @@ export default function MyPosts() {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">My Posts</h1>
+      <p>Write a message in the text field and optionally upload an image before posting.</p>
+      <p className="mb-6">We'll check that the image is not offensive and doesn't contain malware.</p>
       <form onSubmit={handleSubmit} className="mb-4 space-y-2">
         <textarea
           value={newPost}

@@ -11,6 +11,7 @@ import { enhance, generativeRestore, upscale } from "@cloudinary/url-gen/actions
 import { focusOn, autoGravity } from "@cloudinary/url-gen/qualifiers/gravity";
 import { face } from "@cloudinary/url-gen/qualifiers/focusOn";
 
+// The Profile page lets the user input their personal information and upload a profile picture.
 export default function MyProfile() {
   const [isEditing, setIsEditing] = useState(false);
   const [uploadError, setUploadError] = useState('');
@@ -101,6 +102,8 @@ export default function MyProfile() {
       )}
       <div className="mt-8">
         <h2 className="text-xl font-bold mb-4">Profile Picture</h2>
+        <p>Upload an image for your profile picture.</p>
+        <p className="mb-6">We'll check that it's not offensive and doesn't contain malware.</p>
         <div className="space-y-4">
         {loading ? (
           <RotatingLines

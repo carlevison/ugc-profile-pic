@@ -3,6 +3,9 @@ import { NextResponse } from 'next/server'
 // This map will store the moderation results temporarily
 const moderationResults = new Map<string, { status: string, message: string }>()
 
+// This endpoint is used to catch the webhook sent from Cloudinary when the moderation 
+// is complete.  It is also used by the frontend to find out the moderation result for
+// a particular uploaded asset.
 export async function POST(request: Request) {
 
   const data = await request.json()
@@ -14,7 +17,7 @@ export async function POST(request: Request) {
     let status = 'pending'
     let message = ''
     
-
+    // Check the moderation status
     if (moderation_status === 'rejected') {
       status = 'rejected'
       if (moderation_kind === 'aws_rek') {
@@ -35,7 +38,6 @@ export async function POST(request: Request) {
 
   // If it's not a webhook, it's a request from our frontend
   const { public_id, asset_id } = data
-
 
   // Check if we have a moderation result for this asset
   const moderationResult = moderationResults.get(asset_id)

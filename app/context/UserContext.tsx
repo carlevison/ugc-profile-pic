@@ -9,6 +9,7 @@ interface Post {
   image?: string
 }
 
+
 interface UserContextType {
   profilePublicId: string
   setProfilePublicId: (publicId: string) => void
@@ -24,6 +25,7 @@ interface UserContextType {
   setPosts: React.Dispatch<React.SetStateAction<Post[]>>
 }
 
+// The UserContext ensures the user information persists when switching pages
 const UserContext = createContext<UserContextType | undefined>(undefined)
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
