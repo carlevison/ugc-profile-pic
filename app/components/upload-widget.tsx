@@ -54,7 +54,7 @@ export default function UploadWidget({ onUploadSuccess, onUploadError, setLoadin
         {
           cloudName: 'cld-demo-ugc',
           clientAllowedFormats: 'image',
-          uploadPreset: 'ugc-profile-photo-local',
+          uploadPreset: 'ugc-profile-photo',
           sources: ['local'],
           multiple: false,
           maxFiles: 1,
