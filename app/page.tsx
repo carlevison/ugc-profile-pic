@@ -39,7 +39,8 @@ export default function MyProfile() {
     const profileImage = cld.image(publicId);
 
     profileImage.resize(fill().width(300).height(300).gravity(
-      focusOn(face()).fallbackGravity(autoGravity())));
+      focusOn(face()).fallbackGravity(autoGravity())))
+      .format('auto').quality('auto');
 
     if (poorQuality) {
       profileImage.effect(enhance()).effect(generativeRestore()).effect(upscale());
@@ -119,7 +120,7 @@ export default function MyProfile() {
 
         ) : (
           <AdvancedImage cldImg={cld.image("avatar-pic").
-            resize(fill().width(300).height(300).gravity(autoGravity()))} width={300} height={300} alt="Profile" />
+            resize(fill().width(300).height(300).gravity(autoGravity())).format('auto').quality('auto')} width={300} height={300} alt="Profile" />
         )}
         <UploadWidget
           onUploadSuccess={handleUploadSuccess}

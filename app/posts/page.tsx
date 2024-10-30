@@ -80,7 +80,7 @@ export default function MyPosts() {
         newImage && (
              <AdvancedImage cldImg={cld.image(newImage).
               resize(pad().width(300).height(200).background(color("gray"))).
-                roundCorners(byRadius(5))
+                roundCorners(byRadius(5)).format('auto').quality('auto')
             } width={300} height={200} alt="New post"/>
         )}
         <div className="flex space-x-2">
@@ -106,7 +106,8 @@ export default function MyPosts() {
                   focusOn(face()).fallbackGravity(autoGravity()))).
                   roundCorners(max()).
                   effect(
-                    outline().color("pink"))
+                    outline().color("pink")).
+                  format('auto').quality('auto')
               } width={75} height={75} alt="Profile"/>
             </div>
             <div>
@@ -114,7 +115,8 @@ export default function MyPosts() {
               {post.image && (
                 <AdvancedImage cldImg={cld.image(post.image).
                   resize(pad().width(300).height(200).background(color("gray"))).
-                    roundCorners(byRadius(5))
+                    roundCorners(byRadius(5)).
+                    format('auto').quality('auto')
                 } width={300} height={200} alt="Post" className="mt-2"/>
               )}
             </div>
