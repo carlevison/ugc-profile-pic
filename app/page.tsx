@@ -21,7 +21,8 @@ export default function MyProfile() {
     profileImage, setProfileImage,
     name, setName,
     location, setLocation,
-    birthday, setBirthday
+    birthday, setBirthday,
+    setProfileIsPoorQuality
   } = useUser();
   const [loading, setLoading] = useState(false);
 
@@ -34,6 +35,7 @@ export default function MyProfile() {
     setLoading(false);
     setUploadError('');
     setProfilePublicId(publicId);
+    setProfileIsPoorQuality(poorQuality);
 
     // Create the delivery URL for the profile picture:
     const profileImage = cld.image(publicId);

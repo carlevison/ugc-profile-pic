@@ -10,7 +10,7 @@ import { fill, pad } from '@cloudinary/url-gen/actions/resize';
 import { focusOn, autoGravity } from "@cloudinary/url-gen/qualifiers/gravity";
 import { face } from "@cloudinary/url-gen/qualifiers/focusOn";
 import { max, byRadius } from "@cloudinary/url-gen/actions/roundCorners";
-import { outline } from "@cloudinary/url-gen/actions/effect";
+import { outline,enhance, generativeRestore, upscale  } from "@cloudinary/url-gen/actions/effect";
 import { color } from "@cloudinary/url-gen/qualifiers/background";
 
 interface Post {
@@ -25,7 +25,7 @@ export default function MyPosts() {
   const [newImage, setNewImage] = useState('');
   const [uploadError, setUploadError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { profilePublicId, posts, setPosts } = useUser()
+  const { profilePublicId, posts, setPosts, profileIsPoorQuality } = useUser()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -101,14 +101,22 @@ export default function MyPosts() {
         {posts.map((post: Post) => (
           <div key={post.id} className="border p-4 rounded flex items-start dark:border-gray-700">
             <div className="flex-shrink-0 w-[75px] h-[75px] mr-4">
-              <AdvancedImage cldImg={cld.image(profilePublicId  || 'avatar-pic').
-                resize(fill().width(75).height(75).gravity(
-                  focusOn(face()).fallbackGravity(autoGravity()))).
-                  roundCorners(max()).
-                  effect(
-                    outline().color("pink")).
-                  format('auto').quality('auto')
-              } width={75} height={75} alt="Profile"/>
+            <AdvancedImage cldImg={(() => {
+              const img = cld.image(profilePublicId || 'avatar-pic')
+              if (profileIsPoorQuality) {
+                img.effect(enhance())
+                .effect(generativeRestore())
+                .effect(upscale())
+              }
+              img.resize(fill().width(75).height(75).gravity(
+                focusOn(face()).fallbackGravity(autoGravity())))
+              .roundCorners(max())
+              .effect(outline().color("pink"))
+              .format('auto')
+              .quality('auto');
+          
+              return img;
+            })()} width={75} height={75} alt="Profile"/>
             </div>
             <div>
             <p className="text-gray-900 dark:text-gray-100">{post.content}</p>
