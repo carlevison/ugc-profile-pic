@@ -23,6 +23,8 @@ interface UserContextType {
   setBirthday: (birthday: string) => void
   posts: Post[]
   setPosts: React.Dispatch<React.SetStateAction<Post[]>>
+  profileIsPoorQuality: boolean;
+  setProfileIsPoorQuality: (isPoorQuality: boolean) => void;
 }
 
 // The UserContext ensures the user information persists when switching pages
@@ -35,6 +37,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [location, setLocation] = useState('')
   const [birthday, setBirthday] = useState('')
   const [posts, setPosts] = useState<Post[]>([])
+  const [profileIsPoorQuality, setProfileIsPoorQuality] = useState(false);
 
 
   return (
@@ -44,7 +47,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       name, setName,
       location, setLocation,
       birthday, setBirthday,
-      posts, setPosts
+      posts, setPosts,
+      profileIsPoorQuality, setProfileIsPoorQuality
     }}>
       {children}
     </UserContext.Provider>
