@@ -1,20 +1,20 @@
 'use client'
 
-import { useState } from 'react';
-import { useUser } from './context/UserContext';
-import { RotatingLines } from 'react-loader-spinner';
-import UploadWidget from './components/upload-widget';
-import cld from "./components/cld";
-import { AdvancedImage } from '@cloudinary/react';
-import { fill } from '@cloudinary/url-gen/actions/resize';
-import { enhance, generativeRestore, upscale } from "@cloudinary/url-gen/actions/effect";
-import { focusOn, autoGravity } from "@cloudinary/url-gen/qualifiers/gravity";
-import { face } from "@cloudinary/url-gen/qualifiers/focusOn";
+import { useState } from 'react'
+import { useUser } from './context/UserContext'
+import { RotatingLines } from 'react-loader-spinner'
+import UploadWidget from './components/upload-widget'
+import cld from "./components/cld"
+import { AdvancedImage } from '@cloudinary/react'
+import { fill } from '@cloudinary/url-gen/actions/resize'
+import { enhance, generativeRestore, upscale } from "@cloudinary/url-gen/actions/effect"
+import { focusOn, autoGravity } from "@cloudinary/url-gen/qualifiers/gravity"
+import { face } from "@cloudinary/url-gen/qualifiers/focusOn"
 
 // The Profile page lets the user input their personal information and upload a profile picture.
 export default function MyProfile() {
-  const [isEditing, setIsEditing] = useState(false);
-  const [uploadError, setUploadError] = useState('');
+  const [isEditing, setIsEditing] = useState(false)
+  const [uploadError, setUploadError] = useState('')
 
   const { 
     setProfilePublicId,
@@ -23,8 +23,8 @@ export default function MyProfile() {
     location, setLocation,
     birthday, setBirthday,
     setProfileIsPoorQuality
-  } = useUser();
-  const [loading, setLoading] = useState(false);
+  } = useUser()
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,28 +32,28 @@ export default function MyProfile() {
   }
 
   const handleUploadSuccess = (publicId: string, poorQuality: boolean) => {
-    setLoading(false);
-    setUploadError('');
-    setProfilePublicId(publicId);
-    setProfileIsPoorQuality(poorQuality);
+    setLoading(false)
+    setUploadError('')
+    setProfilePublicId(publicId)
+    setProfileIsPoorQuality(poorQuality)
 
     // Create the delivery URL for the profile picture:
-    const profileImage = cld.image(publicId);
+    const profileImage = cld.image(publicId)
 
     profileImage.resize(fill().width(300).height(300).gravity(
       focusOn(face()).fallbackGravity(autoGravity())))
-      .format('auto').quality('auto');
+      .format('auto').quality('auto')
 
     if (poorQuality) {
-      profileImage.effect(enhance()).effect(generativeRestore()).effect(upscale());
+      profileImage.effect(enhance()).effect(generativeRestore()).effect(upscale())
     }
 
-    setProfileImage(profileImage);
+    setProfileImage(profileImage)
   }
 
   const handleUploadError = (error: string) => {
-    setLoading(false);
-    setUploadError(error);
+    setLoading(false)
+    setUploadError(error)
   }
 
   const handleImageUpload = (e: React.MouseEvent) => {

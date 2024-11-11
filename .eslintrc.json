@@ -1,7 +1,8 @@
 {
   "extends": ["next/core-web-vitals", "next/typescript"],
   "rules": {
-             
+   
+   "semi": ["error", "never"],  // Enforce semicolons          
    "@typescript-eslint/no-explicit-any": ["off"]
   }
 }

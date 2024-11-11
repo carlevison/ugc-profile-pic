@@ -37,7 +37,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [location, setLocation] = useState('')
   const [birthday, setBirthday] = useState('')
   const [posts, setPosts] = useState<Post[]>([])
-  const [profileIsPoorQuality, setProfileIsPoorQuality] = useState(false);
+  const [profileIsPoorQuality, setProfileIsPoorQuality] = useState(false)
 
 
   return (

@@ -1,17 +1,17 @@
 'use client'
 
-import { useState } from 'react';
-import { useUser } from '../context/UserContext';
-import { RotatingLines } from 'react-loader-spinner';
-import UploadWidget from '../components/upload-widget';
-import cld from "../components/cld";
-import { AdvancedImage } from '@cloudinary/react';
-import { fill, pad } from '@cloudinary/url-gen/actions/resize';
-import { focusOn, autoGravity } from "@cloudinary/url-gen/qualifiers/gravity";
-import { face } from "@cloudinary/url-gen/qualifiers/focusOn";
-import { max, byRadius } from "@cloudinary/url-gen/actions/roundCorners";
-import { outline,enhance, generativeRestore, upscale  } from "@cloudinary/url-gen/actions/effect";
-import { color } from "@cloudinary/url-gen/qualifiers/background";
+import { useState } from 'react'
+import { useUser } from '../context/UserContext'
+import { RotatingLines } from 'react-loader-spinner'
+import UploadWidget from '../components/upload-widget'
+import cld from "../components/cld"
+import { AdvancedImage } from '@cloudinary/react'
+import { fill, pad } from '@cloudinary/url-gen/actions/resize'
+import { focusOn, autoGravity } from "@cloudinary/url-gen/qualifiers/gravity"
+import { face } from "@cloudinary/url-gen/qualifiers/focusOn"
+import { max, byRadius } from "@cloudinary/url-gen/actions/roundCorners"
+import { outline,enhance, generativeRestore, upscale  } from "@cloudinary/url-gen/actions/effect"
+import { color } from "@cloudinary/url-gen/qualifiers/background"
 
 interface Post {
   id: number
@@ -21,10 +21,10 @@ interface Post {
 
 // The Posts page lets users write a post and optionally upload an image.
 export default function MyPosts() {
-  const [newPost, setNewPost] = useState('');
-  const [newImage, setNewImage] = useState('');
-  const [uploadError, setUploadError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [newPost, setNewPost] = useState('')
+  const [newImage, setNewImage] = useState('')
+  const [uploadError, setUploadError] = useState('')
+  const [loading, setLoading] = useState(false)
   const { profilePublicId, posts, setPosts, profileIsPoorQuality } = useUser()
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -41,13 +41,13 @@ export default function MyPosts() {
   }
 
   const handleUploadSuccess = (publicId: string) => {
-    setLoading(false);
+    setLoading(false)
     setNewImage(publicId)
     setUploadError('')
   }
 
   const handleUploadError = (error: string) => {
-    setLoading(false);
+    setLoading(false)
     setUploadError(error)
   }
 
@@ -113,9 +113,9 @@ export default function MyPosts() {
               .roundCorners(max())
               .effect(outline().color("pink"))
               .format('auto')
-              .quality('auto');
+              .quality('auto')
           
-              return img;
+              return img
             })()} width={75} height={75} alt="Profile"/>
             </div>
             <div>
