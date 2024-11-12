@@ -1,5 +1,5 @@
 export const CLOUDINARY_CONFIG = {
-    cloudName: 'cld-demo-ugc',
+    cloudName: 'MY_CLOUD_NAME',
     uploadPreset: 'ugc-profile-photo',
     defaultImage: 'avatar-pic'
   } as const
