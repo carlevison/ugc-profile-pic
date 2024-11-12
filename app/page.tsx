@@ -10,6 +10,7 @@ import { fill } from '@cloudinary/url-gen/actions/resize'
 import { enhance, generativeRestore, upscale } from "@cloudinary/url-gen/actions/effect"
 import { focusOn, autoGravity } from "@cloudinary/url-gen/qualifiers/gravity"
 import { face } from "@cloudinary/url-gen/qualifiers/focusOn"
+import { CLOUDINARY_CONFIG } from "./config/cloudinary"
 
 // The Profile page lets the user input their personal information and upload a profile picture.
 export default function MyProfile() {
@@ -121,8 +122,10 @@ export default function MyProfile() {
           <AdvancedImage cldImg={profileImage} width={300} height={300} alt="Profile"/>
 
         ) : (
-          <AdvancedImage cldImg={cld.image("avatar-pic").
-            resize(fill().width(300).height(300).gravity(autoGravity())).format('auto').quality('auto')} width={300} height={300} alt="Profile" />
+          <AdvancedImage cldImg={cld.image(CLOUDINARY_CONFIG.defaultImage)
+            .resize(fill().width(300).height(300).gravity(autoGravity()))
+            .format('auto')
+            .quality('auto')} width={300} height={300} alt="Profile" />
         )}
         <UploadWidget
           onUploadSuccess={handleUploadSuccess}

@@ -12,6 +12,7 @@ import { face } from "@cloudinary/url-gen/qualifiers/focusOn"
 import { max, byRadius } from "@cloudinary/url-gen/actions/roundCorners"
 import { outline,enhance, generativeRestore, upscale  } from "@cloudinary/url-gen/actions/effect"
 import { color } from "@cloudinary/url-gen/qualifiers/background"
+import { CLOUDINARY_CONFIG } from "../config/cloudinary"
 
 interface Post {
   id: number
@@ -102,7 +103,7 @@ export default function MyPosts() {
           <div key={post.id} className="border p-4 rounded flex items-start dark:border-gray-700">
             <div className="flex-shrink-0 w-[75px] h-[75px] mr-4">
             <AdvancedImage cldImg={(() => {
-              const img = cld.image(profilePublicId || 'avatar-pic')
+              const img = cld.image(profilePublicId || CLOUDINARY_CONFIG.defaultImage)
               if (profileIsPoorQuality) {
                 img.effect(enhance())
                 .effect(generativeRestore())
@@ -122,9 +123,10 @@ export default function MyPosts() {
             <p className="text-gray-900 dark:text-gray-100">{post.content}</p>
               {post.image && (
                 <AdvancedImage cldImg={cld.image(post.image).
-                  resize(pad().width(300).height(200).background(color("gray"))).
-                    roundCorners(byRadius(5)).
-                    format('auto').quality('auto')
+                  resize(pad().width(300).height(200).background(color("gray")))
+                    .roundCorners(byRadius(5))
+                    .format('auto')
+                    .quality('auto')
                 } width={300} height={200} alt="Post" className="mt-2"/>
               )}
             </div>
